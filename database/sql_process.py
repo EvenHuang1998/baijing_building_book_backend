@@ -2,6 +2,8 @@
 from os import remove
 import sys
 
+from sqlalchemy.sql.expression import insert
+
 sys.path.append("D:\myfiles\code\\front_end\\baijing_building_book_back_end")
 sys.path.append("../")
 
@@ -53,7 +55,7 @@ def delete_from_db(obj):
         return False
 
 class Categories(Model):
-    __tablename__="categories"
+    __tablename__="Categories"
 
     cate_id = Column(Integer, primary_key=True)
     cate_name=Column(String(50))
@@ -70,11 +72,12 @@ class Categories(Model):
         for category in categories:
             category_list.append(dict(cate_id=category.cate_id,
                                       cate_name=category.cate_name))
+        return category_list
 
     @classmethod
     def get_category_by_id(cls,cate_id):
         category=cls.query.filter(Categories.cate_id==cate_id).one()
-        return dict(cate_id=category.cate_id,
+        return True, dict(cate_id=category.cate_id,
                     cate_name=category.cate_name)
 
 
@@ -85,6 +88,7 @@ class Categories(Model):
             return True
         else:
             return False
+
 
     @classmethod
     def add_category(cls,cate_id,cate_name):
@@ -134,7 +138,6 @@ class Buildings(Model):
         except:
             return False,{}
 
-
     @classmethod
     def remove_building(cls,building_id):
         building=cls.query.filter(Buildings.building_id==building_id).one()
@@ -171,14 +174,23 @@ class BuildingMatch(Model):
         match_url_list=list()
         for match_url in match_urls:
             match_url_list.append(match_url.match_url)
-        return dict(building_id=building_id,
+        return True,dict(building_id=building_id,
                     match_url_list=match_url_list)
+    
+    @classmethod
+    def add_match(cls,building_id,match_url):
+        building_match=BuildingMatch(building_id=building_id,
+                                     match_url=match_url)
+        if insert_into_db(building_match):
+            return True
+        else:
+            return False
 
 class BuildingCategory(Model):
     __tablename__="BuildingCategory"
 
     building_id=Column(Integer, ForeignKey("Buildings.building_id"), primary_key=True)
-    cate_id=Column(Integer, ForeignKey("Categoris.cate_id"),primary_key=True)
+    cate_id = Column(Integer, ForeignKey("Categories.cate_id"), primary_key=True)
 
     @classmethod
     def get_category_by_building_id(cls,building_id):
@@ -186,6 +198,14 @@ class BuildingCategory(Model):
         category=Categories.get_category_by_id(building_cate.cate_id)
         return category
     
+    @classmethod
+    def add_building_to_category(cls,building_id,cate_id):
+        building_category=BuildingCategory(building_id=building_id,cate_id=cate_id)
+        if insert_into_db(building_category):
+            return True
+        else:
+            return False
+
     @classmethod
     def get_building_list_by_category_id(cls,cate_id):
         building_cates=cls.query.filter(BuildingCategory.cate_id==cate_id).all()
