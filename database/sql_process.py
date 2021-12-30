@@ -1,8 +1,5 @@
 # coding: utf-8
-from os import remove
 import sys
-
-from sqlalchemy.sql.expression import insert
 
 sys.path.append("D:\myfiles\code\\front_end\\baijing_building_book_back_end")
 sys.path.append("../")
@@ -80,7 +77,6 @@ class Categories(Model):
         return True, dict(cate_id=category.cate_id,
                     cate_name=category.cate_name)
 
-
     @classmethod
     def remove_category(cls,cate_id):
         category=cls.query.filter(Categories.cate_id==cate_id).one()
@@ -88,7 +84,6 @@ class Categories(Model):
             return True
         else:
             return False
-
 
     @classmethod
     def add_category(cls,cate_id,cate_name):
@@ -197,7 +192,7 @@ class BuildingCategory(Model):
         building_cate=cls.query.filter(BuildingCategory.building_id==building_id).one()
         category=Categories.get_category_by_id(building_cate.cate_id)
         return category
-    
+
     @classmethod
     def add_building_to_category(cls,building_id,cate_id):
         building_category=BuildingCategory(building_id=building_id,cate_id=cate_id)
