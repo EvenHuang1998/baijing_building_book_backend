@@ -16,11 +16,11 @@ class GetHomepageBuildingInfo(Resource):
 class GetBuildingByID(Resource):
     def __init__(self):
         self.parser=reqparse.RequestParser()
-        self.parser.add_argument("buildingid",type=int,position="args")
+        self.parser.add_argument("buildingid",type=int,location="args")
         super(GetBuildingByID,self).__init__()
     
     def get(self):
-        args=self.parser
+        args=self.parser.parse_args()
         building_id=args["buildingid"]
         if not building_id:
             return return_info.DATA_ERR,404
