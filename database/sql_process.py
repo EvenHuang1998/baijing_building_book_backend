@@ -190,8 +190,8 @@ class BuildingCategory(Model):
     @classmethod
     def get_category_by_building_id(cls,building_id):
         building_cate=cls.query.filter(BuildingCategory.building_id==building_id).one()
-        category=Categories.get_category_by_id(building_cate.cate_id)
-        return category
+        status,category=Categories.get_category_by_id(building_cate.cate_id)
+        return True,category
 
     @classmethod
     def add_building_to_category(cls,building_id,cate_id):
@@ -206,6 +206,6 @@ class BuildingCategory(Model):
         building_cates=cls.query.filter(BuildingCategory.cate_id==cate_id).all()
         buildings_list=list()
         for building_cate in building_cates:
-            status,building=Buildings.get_building_by_id(building_cate.building_id)
+            _,building=Buildings.get_building_by_id(building_cate.building_id)
             buildings_list.append(building)
-        return buildings_list
+        return True,buildings_list

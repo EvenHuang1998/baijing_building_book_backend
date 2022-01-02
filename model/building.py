@@ -3,6 +3,7 @@
 from flask_restful import Resource,reqparse
 from model import return_info
 from database.sql_process import Buildings
+from database.sql_process import BuildingCategory
 
 class GetHomepageBuildingInfo(Resource):
     def __init__(self):
@@ -37,6 +38,7 @@ class AddNewBuilding(Resource):
         self.parser.add_argument("buildingname",type=str,location="form")
         self.parser.add_argument("buildingimg",type=str,location="form")
         self.parser.add_argument("accessway",type=str,location="form")
+        self.parser.add_argument("buildingcate",type=int,location="form")
         super(AddNewBuilding, self).__init__()
 
     def post(self):
@@ -45,11 +47,16 @@ class AddNewBuilding(Resource):
         building_name=args["buildingname"]
         building_img=args["buildingimg"]
         building_access_way=args["accessway"]
+        building_cate=args["buildingcate"]
         for _, value in args.items():
             if not value:
                 return return_info.DATA_ERR, 404
         if Buildings.add_building(building_id,building_name,building_img,building_access_way):
-            return {"status": "OK"}, 200
+            if BuildingCategory.add_building_to_category(building_id,building_cate):       
+                return {"status": "OK"}, 200
+            else:
+                Buildings.remove_building(building_id)
+                return return_info.SERVER_ERR,503
         else:
             return return_info.SERVER_ERR, 503
 

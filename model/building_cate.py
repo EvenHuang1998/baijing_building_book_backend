@@ -17,7 +17,7 @@ class GetBuildingListOfCategory(Resource):
             return return_info.DATA_ERR,404
         query_status,list_=BuildingCategory.get_building_list_by_category_id(cateid)
         if query_status:
-            return list_
+            return list_,200
         else:
             return return_info.QUERY_FAILED,404
 
