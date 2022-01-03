@@ -100,13 +100,15 @@ class Buildings(Model):
     building_name=Column(String(50))
     building_img_url=Column(String(255))
     building_access_way=Column(String(255))
+    building_size=Column(String(50))
 
     @property
     def json(self):
         return dict(building_id=self.building_id,
                     building_name=self.building_name,
                     building_img_url=self.building_img_url,
-                    building_access_way=self.building_access_way)
+                    building_access_way=self.building_access_way,
+                    building_size=self.building_size)
     
     @classmethod
     def get_homepage_buildings_info(cls):
@@ -142,11 +144,12 @@ class Buildings(Model):
             return False
     
     @classmethod
-    def add_building(cls,building_id,building_name,building_img_url,building_access_way):
+    def add_building(cls,building_id,building_name,building_img_url,building_access_way,building_size):
         building=Buildings(building_id=building_id,
                            building_name=building_name,
                            building_img_url=building_img_url,
-                           building_access_way=building_access_way)
+                           building_access_way=building_access_way,
+                           building_size=building_size)
         if insert_into_db(building):
             return True
         else:
