@@ -11,8 +11,6 @@ def shutdown_session(exception=None):
     Session.remove()
 
 # 添加header解决跨域
-
-
 @app.after_request
 def after_request(response):
     response.headers["Access-Control-Allow-Origin"] = "*"
